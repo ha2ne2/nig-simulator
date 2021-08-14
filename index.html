@@ -11,17 +11,17 @@
 
 <body>
     <h1>新しい放置ゲームのシミュレータ</h1>
-    段位リセット：<input type="number" id="resetCount" size=2 value=0 max=99 style="width: 4em" onKeyDown="if(this.value.length==2 && event.keyCode>47 && event.keyCode < 58)return false;">回<br>
+    段位リセット：<input type="number" id="resetCount" size=2 value=0 style="width: 4em">回<br>
     間隙：<input type="number" id="interval" size=2 value=1000 style="width: 4em">毛秒<br>
     現在のポイント：<input type="text" id="currPoints" size=7 value="0.000e+0"><br>
     発生器1: <input type="text" id="g1" size=7 value="1.000e+0"> 購入数: <input type="number" id="g1-num" size=2 value=1 style="width: 4em"><br>
-    発生器2: <input type="text" id="g2" size=7 value="0.000e+0"> 購入数: <input type="number" id="g2-num" size=2 value=0 style="width: 4em"><br>
-    発生器3: <input type="text" id="g3" size=7 value="0.000e+0"> 購入数: <input type="number" id="g3-num" size=2 value=0 style="width: 4em"><br>
-    発生器4: <input type="text" id="g4" size=7 value="0.000e+0"> 購入数: <input type="number" id="g4-num" size=2 value=0 style="width: 4em"><br>
-    発生器5: <input type="text" id="g5" size=7 value="0.000e+0"> 購入数: <input type="number" id="g5-num" size=2 value=0 style="width: 4em"><br>
-    発生器6: <input type="text" id="g6" size=7 value="0.000e+0"> 購入数: <input type="number" id="g6-num" size=2 value=0 style="width: 4em"><br>
-    発生器7: <input type="text" id="g7" size=7 value="0.000e+0"> 購入数: <input type="number" id="g7-num" size=2 value=0 style="width: 4em"><br>
-    発生器8: <input type="text" id="g8" size=7 value="0.000e+0"> 購入数: <input type="number" id="g8-num" size=2 value=0 style="width: 4em"><br>
+    発生器2: <input type="text" id="g2" size=7 value="1.000e+0"> 購入数: <input type="number" id="g2-num" size=2 value=0 style="width: 4em"><br>
+    発生器3: <input type="text" id="g3" size=7 value="1.000e+0"> 購入数: <input type="number" id="g3-num" size=2 value=0 style="width: 4em"><br>
+    発生器4: <input type="text" id="g4" size=7 value="1.000e+0"> 購入数: <input type="number" id="g4-num" size=2 value=0 style="width: 4em"><br>
+    発生器5: <input type="text" id="g5" size=7 value="1.000e+0"> 購入数: <input type="number" id="g5-num" size=2 value=0 style="width: 4em"><br>
+    発生器6: <input type="text" id="g6" size=7 value="1.000e+0"> 購入数: <input type="number" id="g6-num" size=2 value=0 style="width: 4em"><br>
+    発生器7: <input type="text" id="g7" size=7 value="1.000e+0"> 購入数: <input type="number" id="g7-num" size=2 value=0 style="width: 4em"><br>
+    発生器8: <input type="text" id="g8" size=7 value="1.000e+0"> 購入数: <input type="number" id="g8-num" size=2 value=0 style="width: 4em"><br>
     シミュレート期間：<input type="number" id="simulatePeriod" size=2 value=1 style="width: 4em">時間<br>
     <label><input name="a" id="linear" type="radio" onchange="stateChanged()" checked>線形目盛</label><br>
     <label><input name="a" id="logarithmic" type="radio" onchange="stateChanged()">対数目盛</label><br>
@@ -89,7 +89,7 @@
         }
 
         function calc(){
-            var resetBonus = parseInt(document.getElementById("resetCount").value) + 1;
+            var resetBonus = softCap(new Decimal(document.getElementById("resetCount").value).add(1), new Decimal(100));
             var timex = 1000 / parseInt(document.getElementById("interval").value);
             var simulatePeriodSec = parseFloat(document.getElementById("simulatePeriod").value) * 3600;
             var currPoints = new Decimal(document.getElementById("currPoints").value)

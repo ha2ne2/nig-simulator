@@ -32,3 +32,11 @@ function convertDecimalArrayToLogNumberArray(decimalArray){
         return log10 + (n.div(new Decimal(10).pow(Math.floor(n.log10())))-1)/9;
     });
 }
+
+// softCap(Decimal, Decimal) : Decimal
+function softCap(num,cap){
+    if(num.lessThanOrEqualTo(cap)) return num;
+    let capped = num.div(cap)
+    capped = new Decimal(capped.log2()).add(1)
+    return cap.mul(capped).min(num)
+}
