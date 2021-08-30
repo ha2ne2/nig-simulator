@@ -12,6 +12,7 @@
 <body>
     <h1>新しい放置ゲームのシミュレータ</h1>
     段位リセット：<input type="number" id="resetCount" size=2 value=0 style="width: 4em">回<br>
+    最大取得段位：<input type="number" id="maxLevelGained" size=2 value=1 style="width: 4em">回<br>
     間隙：<input type="number" id="interval" size=2 value=1000 style="width: 4em">毛秒<br>
     現在のポイント：<input type="text" id="currPoints" size=7 value="0.000e+0"><br>
     発生器1: <input type="text" id="g1" size=7 value="1.000e+0"> 購入数: <input type="number" id="g1-num" size=2 value=1 style="width: 4em"><br>
@@ -25,6 +26,12 @@
     シミュレート期間：<input type="number" id="simulatePeriod" size=2 value=1 style="width: 4em">時間<br>
     <label><input name="a" id="linear" type="radio" onchange="stateChanged()" checked>線形目盛</label><br>
     <label><input name="a" id="logarithmic" type="radio" onchange="stateChanged()">対数目盛</label><br>
+    <label><input id="bonus3" type="checkbox" disabled checked >効力3</label><br>
+    <label><input id="bonus4" type="checkbox">効力4</label><br>
+    <label><input id="bonus8" type="checkbox">効力8</label><br>
+    <label><input id="bonus12" type="checkbox">効力12</label><br>
+    <label><input id="levelbonus1" type="checkbox">段位効力1</label><br>
+    
     <input type="button" value="計算" onclick="calc()"> <input type="button" value="グラフをクリア" onclick="graphClear()"> 
     <div>
         <canvas id="myChart"></canvas>
@@ -89,10 +96,31 @@
         }
 
         function calc(){
-            var resetBonus = softCap(new Decimal(document.getElementById("resetCount").value).add(1), new Decimal(100));
+            var cap = document.getElementById("levelbonus1").checked ? new Decimal(200) : new Decimal(100);
+            var resetBonus = softCap(new Decimal(document.getElementById("resetCount").value).add(1), cap);
             var timex = 1000 / parseInt(document.getElementById("interval").value);
             var simulatePeriodSec = parseFloat(document.getElementById("simulatePeriod").value) * 3600;
-            var currPoints = new Decimal(document.getElementById("currPoints").value)
+            var currPoints = new Decimal(document.getElementById("currPoints").value);
+            var gNums = [new Decimal(document.getElementById("g1-num").value),
+                 new Decimal(document.getElementById("g2-num").value),
+                 new Decimal(document.getElementById("g3-num").value),
+                 new Decimal(document.getElementById("g4-num").value),
+                 new Decimal(document.getElementById("g5-num").value),
+                 new Decimal(document.getElementById("g6-num").value),
+                 new Decimal(document.getElementById("g7-num").value),
+                 new Decimal(document.getElementById("g8-num").value)
+                ];
+            if (document.getElementById("bonus12").checked) {
+                gNums = gNums.map((n)=>
+                    n.mul(new Decimal(n.add(2).log2()).round())
+                );
+            }    
+            if (document.getElementById("bonus4").checked) {
+                gNums = gNums.map((n)=>n.mul(2));
+            }
+            if (document.getElementById("bonus8").checked) {
+                gNums[0] = gNums[0].mul(parseInt(document.getElementById("maxLevelGained").value));
+            }    
             var points = simlate(
                 currPoints,
                 [new Decimal(document.getElementById("g1").value),
@@ -104,15 +132,7 @@
                  new Decimal(document.getElementById("g7").value),
                  new Decimal(document.getElementById("g8").value)
                 ],
-                [new Decimal(document.getElementById("g1-num").value),
-                 new Decimal(document.getElementById("g2-num").value),
-                 new Decimal(document.getElementById("g3-num").value),
-                 new Decimal(document.getElementById("g4-num").value),
-                 new Decimal(document.getElementById("g5-num").value),
-                 new Decimal(document.getElementById("g6-num").value),
-                 new Decimal(document.getElementById("g7-num").value),
-                 new Decimal(document.getElementById("g8-num").value)
-                ],
+                gNums,
                 resetBonus,
                 timex,
                 simulatePeriodSec
