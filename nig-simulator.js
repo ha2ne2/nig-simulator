@@ -28,8 +28,7 @@ function convertDecimalArrayToNumberArray(decimalArray){
 // ex) convertDecimalArrayToLogNumberArray([1e+15, 5e+15, 9e+16]) => [15.0, 15.44, 16.88]
 function convertDecimalArrayToLogNumberArray(decimalArray){
     return decimalArray.map(function(n) {
-        var log10 = Math.floor(n.log10());
-        return log10 + (n.div(new Decimal(10).pow(Math.floor(n.log10())))-1)/9;
+        return n.log10();
     });
 }
 
